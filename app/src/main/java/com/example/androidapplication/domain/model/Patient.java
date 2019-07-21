@@ -1,50 +1,53 @@
 package com.example.androidapplication.domain.model;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
+@Entity
 public class Patient implements Serializable {
 
+    @PrimaryKey(autoGenerate = true)
     private Long id;
-    private String name;
-    private String surname;
+
+    @NotNull private String name;
+    @NotNull private String surname;
     private String patronum;
-    private Date birthDay;
-    private Long cardNumber;
+    @NotNull private Date birthDay;
     private String diagnosis;
-    private Date enterDate;
+    @NotNull private Date enterDate;
     private Date outDate;
     private boolean isPaid;
 
 
-    public Patient(long id,
-                   String name,
-                   String surname,
+    public Patient(Long id,
+                   @NotNull String name,
+                   @NotNull String surname,
                    String patronum,
-                   long birthDay,
-                   long cardNumber,
+                   @NotNull Date birthDay,
                    String diagnosis,
-                   long enterDate,
-                   long outDate,
-                   int isPaid) {
+                   @NotNull Date enterDate,
+                   Date outDate,
+                   Boolean isPaid) {
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.patronum = patronum;
-        this.birthDay = new Date(birthDay);
-        this.cardNumber = cardNumber;
+        this.birthDay = birthDay;
         this.diagnosis = diagnosis;
-        this.enterDate = new Date(enterDate);
-        if(outDate!=0)
-            this.outDate = new Date(outDate);
-        else this.outDate = null;
-        this.isPaid = isPaid == 1;
+        this.enterDate = enterDate;
+        this.outDate = outDate;
+        this.isPaid = isPaid;
     }
 
     @Override
-    public String toString() {
-        return this.cardNumber+"  "+this.getSurname()+" "+this.getName().subSequence(0,1)+"."+this.getPatronumic().subSequence(0,1)+".";
+    public @NotNull String toString() {
+        return getCardNumber()+"  "+this.getSurname()+" "+this.getName().subSequence(0,1)+"."+this.getPatronumic().subSequence(0,1)+".";
     }
 
     public String getFullName(){
@@ -52,10 +55,10 @@ public class Patient implements Serializable {
     }
 
     public String getDetails() {
-        SimpleDateFormat format=new SimpleDateFormat("dd.MM.yyyy");
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
         return
                 "birthDay:  " + format.format(birthDay) + "\n" +
-                        " cardNumber:  " + cardNumber +"\n" +
+                        " cardNumber:  " + getCardNumber() +"\n" +
                         " diagnosis:   "+ diagnosis+"\n" +
                         " date of entering:   "+ format.format(enterDate)+"\n" +
                         " date of discharge:   "+ (outDate!=null?format.format(outDate):"")+"\n" +
@@ -69,30 +72,26 @@ public class Patient implements Serializable {
 
         Patient patient = (Patient) o;
 
-        if (id != null ? !id.equals(patient.id) : patient.id != null) return false;
-        if (cardNumber != null ? !cardNumber.equals(patient.cardNumber) : patient.cardNumber != null)
-            return false;
-        return true;
+        return Objects.equals(patient.id, this.id);
 
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (surname != null ? surname.hashCode() : 0);
+        result = 31 * result + name.hashCode();
+        result = 31 * result + surname.hashCode();
         result = 31 * result + (patronum != null ? patronum.hashCode() : 0);
-        result = 31 * result + (birthDay != null ? birthDay.hashCode() : 0);
-        result = 31 * result + (cardNumber != null ? cardNumber.hashCode() : 0);
+        result = 31 * result + birthDay.hashCode();
         result = 31 * result + (diagnosis != null ? diagnosis.hashCode() : 0);
         return result;
     }
 
-    public Date getEnterDate() {
+    public @NotNull Date getEnterDate() {
         return enterDate;
     }
 
-    public void setEnterDate(Date enterDate) {
+    public void setEnterDate(@NotNull Date enterDate) {
         this.enterDate = enterDate;
     }
 
@@ -116,11 +115,11 @@ public class Patient implements Serializable {
         return id;
     }
 
-    public String getName() {
+    public @NotNull String getName() {
         return name;
     }
 
-    public String getSurname() {
+    public @NotNull String getSurname() {
         return surname;
     }
 
@@ -128,44 +127,39 @@ public class Patient implements Serializable {
         return patronum;
     }
 
-    public Date getBirthDay() {
+    public @NotNull  Date getBirthDay() {
         return birthDay;
     }
 
-    public long getCardNumber() {
-        return cardNumber;
+    public String getCardNumber() {
+        return  String.format("%08d", id);
     }
 
     public String getDiagnosis() {
         return diagnosis;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
+    public void setName(@NotNull String name) {
         this.name = name;
     }
 
-    public void setSurname(String surname) {
+    public void setSurname(@NotNull String surname) {
         this.surname = surname;
     }
 
-    public void setPatronumic(String patronumic) {
-        this.patronum = patronumic;
+    public void setPatronum(String patronum) {
+        this.patronum = patronum;
     }
 
-    public void setBirthDay(Date birthDay) {
+    public void setBirthDay(@NotNull Date birthDay) {
         this.birthDay = birthDay;
-    }
-
-    public void setCardNumber(long cardNumber) {
-        this.cardNumber = cardNumber;
     }
 
     public void setDiagnosis(String diagnosis) {
         this.diagnosis = diagnosis;
     }
 
+    public String getPatronum() {
+        return patronum;
+    }
 }

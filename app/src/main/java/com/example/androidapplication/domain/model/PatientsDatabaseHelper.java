@@ -4,10 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteException;
-import android.widget.Toast;
 
-import java.io.Console;
 import java.util.Date;
 
 
@@ -57,7 +54,7 @@ public class PatientsDatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }
 
-    public static void insertPatient(SQLiteDatabase db, String name, String surname, String patronumic,
+    public static long insertPatient(SQLiteDatabase db, String name, String surname, String patronumic,
             Date birthDay, Long cardNumber, String diagnosis, int isPaid, Date enterDate, Date outDate) {
         ContentValues values = new ContentValues();
         values.put(NAME_COLUMN_NAME, name);
@@ -70,6 +67,6 @@ public class PatientsDatabaseHelper extends SQLiteOpenHelper {
         values.put(ENTER_DATE_COLUMN_NAME, enterDate.getTime());
         if(outDate!=null)
              values.put(OUT_DATE_COLUMN_NAME, outDate.getTime());
-        db.insertOrThrow(TABLE_NAME, null, values);
+        return db.insertOrThrow(TABLE_NAME, null, values);
     }
 }

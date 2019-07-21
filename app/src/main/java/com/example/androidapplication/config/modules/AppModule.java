@@ -1,9 +1,8 @@
 package com.example.androidapplication.config.modules;
 
+import android.arch.persistence.room.Room;
 import android.content.Context;
-import android.database.sqlite.SQLiteOpenHelper;
-import com.example.androidapplication.domain.repository.PatientRepository;
-import com.example.androidapplication.domain.repository.impl.PatientRepositoryImpl;
+import com.example.androidapplication.domain.model.AppDatabase;
 import com.example.androidapplication.presentation.contracts.EditAddContract;
 import com.example.androidapplication.presentation.contracts.ViewPatientDetailContract;
 import com.example.androidapplication.presentation.contracts.ViewPatientsContract;
@@ -12,8 +11,6 @@ import com.example.androidapplication.presentation.presenters.impl.ViewPatientDe
 import com.example.androidapplication.presentation.presenters.impl.ViewPatientsPresenter;
 import dagger.Module;
 import dagger.Provides;
-
-import javax.inject.Singleton;
 
 @Module
 public class AppModule {
@@ -31,22 +28,23 @@ public class AppModule {
     }
 
     @Provides
-    ViewPatientDetailContract.Presenter provideViewPatientDetailsPresenter(PatientRepository repository) {
-        return new ViewPatientDetailsPresenter(repository);
+    ViewPatientDetailContract.Presenter provideViewPatientDetailsPresenter(AppDatabase db) {
+        return new ViewPatientDetailsPresenter(db);
     }
 
     @Provides
-    EditAddContract.Presenter provideEditAddPresenter(PatientRepository repository) {
-        return new EditAddPatientPresenter(repository);
+    EditAddContract.Presenter provideEditAddPresenter(AppDatabase db) {
+        return new EditAddPatientPresenter(db);
     }
 
     @Provides
-    ViewPatientsContract.Presenter provideViewPatientsPresenter(PatientRepository repository) {
-        return new ViewPatientsPresenter(repository);
+    ViewPatientsContract.Presenter provideViewPatientsPresenter(AppDatabase db) {
+        return new ViewPatientsPresenter(db);
     }
 
     @Provides
-    PatientRepository providePatientRepository(Context context) {
-        return new PatientRepositoryImpl(context);
+    AppDatabase provideDBInstance(Context context) {
+        return Room.databaseBuilder(context,
+                AppDatabase.class, "database").build();
     }
 }

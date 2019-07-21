@@ -16,25 +16,24 @@ import static com.example.androidapplication.domain.model.PatientsDatabaseHelper
 
 public class PatientRepositoryImpl implements PatientRepository {
 
-    Context context;
+    private Context context;
 
     public PatientRepositoryImpl(Context context) {
         this.context = context;
     }
 
     @Override
-    public boolean insert(Patient model) {
+    public long insert(Patient model) {
         try(SQLiteDatabase db = new PatientsDatabaseHelper(context).getReadableDatabase()) {
-            PatientsDatabaseHelper.insertPatient(db, model.getName(),
+            return PatientsDatabaseHelper.insertPatient(db, model.getName(),
                     model.getSurname(), model.getPatronumic(), model.getBirthDay(),
                     model.getCardNumber(), model.getDiagnosis(), model.isPaid()? 1: 0,
                     model.getEnterDate(), model.getOutDate());
         }
-        return true;
     }
 
     @Override
-    public boolean update(Patient model) {
+    public int update(Patient model) {
         try(SQLiteDatabase db = new PatientsDatabaseHelper(context).getReadableDatabase()) {
             ContentValues values = new ContentValues();
             values.put(NAME_COLUMN_NAME, model.getName());
@@ -46,12 +45,11 @@ public class PatientRepositoryImpl implements PatientRepository {
             values.put(IS_PAID_COLUMN_NAME, model.isPaid()? 1: 0);
             values.put(ENTER_DATE_COLUMN_NAME, model.getEnterDate().getTime());
             values.put(OUT_DATE_COLUMN_NAME, model.getOutDate().getTime());
-            db.update(TABLE_NAME,
+            return db.update(TABLE_NAME,
                     values,
                     ID_COLUMN_NAME + " = ?",
                     new String[] {Long.toString(model.getId())});
         }
-        return true;
     }
 
     @Override
@@ -107,12 +105,12 @@ public class PatientRepositoryImpl implements PatientRepository {
                 cursor.getString(cursor.getColumnIndex(NAME_COLUMN_NAME)),
                 cursor.getString(cursor.getColumnIndex(SURNAME_COLUMN_NAME)),
                 cursor.getString(cursor.getColumnIndex(PATRONUM_COLUMN_NAME)),
-                cursor.getLong(cursor.getColumnIndex(BIRTHDAY_COLUMN_NAME)),
+                new Date(cursor.getLong(cursor.getColumnIndex(BIRTHDAY_COLUMN_NAME))),
                 cursor.getLong(cursor.getColumnIndex(CARD_NUMBER_COLUMN_NAME)),
                 cursor.getString(cursor.getColumnIndex(DIAGNOSIS_COLUMN_NAME)),
-                cursor.getLong(cursor.getColumnIndex(ENTER_DATE_COLUMN_NAME)),
-                cursor.getLong(cursor.getColumnIndex(OUT_DATE_COLUMN_NAME)),
-                cursor.getInt(cursor.getColumnIndex(IS_PAID_COLUMN_NAME))
+                new Date(cursor.getLong(cursor.getColumnIndex(ENTER_DATE_COLUMN_NAME))),
+                new Date(cursor.getLong(cursor.getColumnIndex(OUT_DATE_COLUMN_NAME))),
+                cursor.getInt(cursor.getColumnIndex(IS_PAID_COLUMN_NAME)) == 1
         );
     }
 }
