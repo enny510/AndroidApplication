@@ -1,19 +1,24 @@
 package com.example.androidapplication.ui.activities;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.ContextMenu;
 import android.view.View;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
+
 import com.example.androidapplication.AndroidApplication;
 import com.example.androidapplication.R;
-import com.example.androidapplication.domain.model.Patient;
+import com.example.androidapplication.domain.model.presenters.PatientWithSessions;
 import com.example.androidapplication.presentation.contracts.ViewPatientsContract;
 import com.example.androidapplication.ui.utils.PatientListAdapter;
 
-import javax.inject.Inject;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,7 +48,7 @@ public class ViewPatientsActivity extends AppCompatActivity implements ViewPatie
         super.onSaveInstanceState(outState);
     }
 
-    private void fillList(List<Patient> patients){
+    private void fillList(List<PatientWithSessions> patients){
 
                 ListAdapter listAdapter = new PatientListAdapter(this,
                         patients);
@@ -53,7 +58,7 @@ public class ViewPatientsActivity extends AppCompatActivity implements ViewPatie
     }
 
     @Override
-    public void showPatients(List<Patient> patients) {
+    public void showPatients(List<PatientWithSessions> patients) {
         if(patients.isEmpty())
             Toast.makeText(this, "no match results", Toast.LENGTH_LONG).show();
         else

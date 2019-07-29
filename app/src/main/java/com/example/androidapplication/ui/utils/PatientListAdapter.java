@@ -9,21 +9,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import com.example.androidapplication.domain.model.Patient;
+
+import com.example.androidapplication.domain.model.presenters.PatientWithSessions;
 import com.example.androidapplication.ui.activities.EditAddActivity;
-import com.example.androidapplication.ui.activities.PatientDetailActivity;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 
-public class PatientListAdapter extends ArrayAdapter<Patient> {
+public class PatientListAdapter extends ArrayAdapter<PatientWithSessions> {
 
     private final Context context;
-    private final List<Patient> values;
+    private final List<PatientWithSessions> values;
 
-    public PatientListAdapter(Context context, List<Patient> values) {
+    public PatientListAdapter(Context context, List<PatientWithSessions> values) {
         super(context, android.R.layout.simple_list_item_2, values);
         this.context = context;
         this.values = values;
@@ -44,9 +44,9 @@ public class PatientListAdapter extends ArrayAdapter<Patient> {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.text1.setText(holder.patient.toString());
+        holder.text1.setText(holder.patient.patient.toString());
         holder.text1.setBackgroundColor(context.getResources().getColor(android.R.color.holo_green_dark));
-        holder.text2.setText(holder.patient.getDetails());
+        holder.text2.setText(holder.patient.patient.getDetails() + "\n" + holder.patient.sessions.get(0));
         holder.text2.setBackgroundColor(context.getResources().getColor(android.R.color.holo_orange_dark));
         holder.text2.setVisibility(View.GONE);
 
@@ -63,7 +63,7 @@ public class PatientListAdapter extends ArrayAdapter<Patient> {
         ViewHolder viewHolder = ((ViewHolder)v.getTag());
         Intent intent = new Intent(context, EditAddActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putLong("patientId", viewHolder.patient.getId());
+        bundle.putLong("patientId", viewHolder.patient.patient.getId());
         intent.putExtras(bundle);
         context.startActivity(intent);
         return true;
@@ -71,11 +71,11 @@ public class PatientListAdapter extends ArrayAdapter<Patient> {
 
     static class ViewHolder {
         boolean collapsed = true;
-        Patient patient;
+        PatientWithSessions patient;
         TextView text1;
         TextView text2;
 
-        static ViewHolder createViewHolderFromViewAndWithPatient(View v, Patient p){
+        static ViewHolder createViewHolderFromViewAndWithPatient(View v, PatientWithSessions p){
             ViewHolder holder = new ViewHolder();
             holder.patient = p;
             holder.text1 = v.findViewById(android.R.id.text1);
