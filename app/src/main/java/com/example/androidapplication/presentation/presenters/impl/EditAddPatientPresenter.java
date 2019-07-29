@@ -1,10 +1,16 @@
 package com.example.androidapplication.presentation.presenters.impl;
 
 import android.database.sqlite.SQLiteException;
+
 import com.example.androidapplication.domain.model.AppDatabase;
 import com.example.androidapplication.domain.model.Patient;
+import com.example.androidapplication.domain.model.presenters.PatientWithSessions;
 import com.example.androidapplication.presentation.contracts.EditAddContract;
 import com.example.androidapplication.presentation.presenters.BasePresenter;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.schedulers.Schedulers;
 
 public class EditAddPatientPresenter
         extends BasePresenter<EditAddContract.View>
@@ -32,16 +38,19 @@ public class EditAddPatientPresenter
 
     @Override
     public void onViewIsReady(long id) {
-        try{
-            Patient p;
-            if((p = db.patientDao().getById(id)) != null)
-                getView().showPatient(p);
-            else getView().handleError("Patient with id " + id + "isn't founded");
+            db.patientDao().getById(id)
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new DisposableSingleObserver<PatientWithSessions>() {
+                        @Override
+                        public void onSuccess(PatientWithSessions patient) {
+                            getView().showPatient(patient);
+                        }
 
-        }
-        catch(SQLiteException e){
-            getView().handleError("Database unavailable. Try later");
-        }
-
+                        @Override
+                        public void onError(Throwable e) {
+                            getView().handleError(e.getMessage());//"Patient with id " + id + "isn't founded"
+                        }
+                    });
     }
 }

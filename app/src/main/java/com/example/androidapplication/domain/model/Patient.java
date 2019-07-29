@@ -1,7 +1,9 @@
 package com.example.androidapplication.domain.model;
 
+import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -18,31 +20,19 @@ public class Patient implements Serializable {
     @NotNull private String name;
     @NotNull private String surname;
     private String patronum;
-    @NotNull private Date birthDay;
-    private String diagnosis;
-    @NotNull private Date enterDate;
-    private Date outDate;
-    private boolean isPaid;
+    @NotNull @ColumnInfo(name = "birthday") private Date birthDay;
 
 
     public Patient(Long id,
                    @NotNull String name,
                    @NotNull String surname,
                    String patronum,
-                   @NotNull Date birthDay,
-                   String diagnosis,
-                   @NotNull Date enterDate,
-                   Date outDate,
-                   Boolean isPaid) {
+                   @NotNull Date birthDay) {
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.patronum = patronum;
         this.birthDay = birthDay;
-        this.diagnosis = diagnosis;
-        this.enterDate = enterDate;
-        this.outDate = outDate;
-        this.isPaid = isPaid;
     }
 
     @Override
@@ -58,11 +48,7 @@ public class Patient implements Serializable {
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
         return
                 "birthDay:  " + format.format(birthDay) + "\n" +
-                        " cardNumber:  " + getCardNumber() +"\n" +
-                        " diagnosis:   "+ diagnosis+"\n" +
-                        " date of entering:   "+ format.format(enterDate)+"\n" +
-                        " date of discharge:   "+ (outDate!=null?format.format(outDate):"")+"\n" +
-                        " state:   "+ (isPaid?"Paid":"Free");
+                        " cardNumber:  " + getCardNumber();
     }
 
     @Override
@@ -83,36 +69,15 @@ public class Patient implements Serializable {
         result = 31 * result + surname.hashCode();
         result = 31 * result + (patronum != null ? patronum.hashCode() : 0);
         result = 31 * result + birthDay.hashCode();
-        result = 31 * result + (diagnosis != null ? diagnosis.hashCode() : 0);
         return result;
-    }
-
-    public @NotNull Date getEnterDate() {
-        return enterDate;
-    }
-
-    public void setEnterDate(@NotNull Date enterDate) {
-        this.enterDate = enterDate;
-    }
-
-    public Date getOutDate() {
-        return outDate;
-    }
-
-    public void setOutDate(Date outDate) {
-        this.outDate = outDate;
-    }
-
-    public boolean isPaid() {
-        return isPaid;
-    }
-
-    public void setPaid(boolean paid) {
-        isPaid = paid;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public @NotNull String getName() {
@@ -135,10 +100,6 @@ public class Patient implements Serializable {
         return  String.format("%08d", id);
     }
 
-    public String getDiagnosis() {
-        return diagnosis;
-    }
-
     public void setName(@NotNull String name) {
         this.name = name;
     }
@@ -153,10 +114,6 @@ public class Patient implements Serializable {
 
     public void setBirthDay(@NotNull Date birthDay) {
         this.birthDay = birthDay;
-    }
-
-    public void setDiagnosis(String diagnosis) {
-        this.diagnosis = diagnosis;
     }
 
     public String getPatronum() {

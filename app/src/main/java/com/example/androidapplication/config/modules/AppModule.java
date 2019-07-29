@@ -2,6 +2,7 @@ package com.example.androidapplication.config.modules;
 
 import android.arch.persistence.room.Room;
 import android.content.Context;
+
 import com.example.androidapplication.domain.model.AppDatabase;
 import com.example.androidapplication.presentation.contracts.EditAddContract;
 import com.example.androidapplication.presentation.contracts.ViewPatientDetailContract;
@@ -9,6 +10,7 @@ import com.example.androidapplication.presentation.contracts.ViewPatientsContrac
 import com.example.androidapplication.presentation.presenters.impl.EditAddPatientPresenter;
 import com.example.androidapplication.presentation.presenters.impl.ViewPatientDetailsPresenter;
 import com.example.androidapplication.presentation.presenters.impl.ViewPatientsPresenter;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -45,6 +47,9 @@ public class AppModule {
     @Provides
     AppDatabase provideDBInstance(Context context) {
         return Room.databaseBuilder(context,
-                AppDatabase.class, "database").build();
+                AppDatabase.class, "database")
+                    .addMigrations(AppDatabase.migrations)
+                    .addCallback(AppDatabase.createCallback)
+                .build();
     }
 }

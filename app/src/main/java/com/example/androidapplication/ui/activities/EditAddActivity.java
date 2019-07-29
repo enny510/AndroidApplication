@@ -1,30 +1,27 @@
 package com.example.androidapplication.ui.activities;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.text.InputFilter;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.*;
+import android.widget.CheckBox;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.androidapplication.AndroidApplication;
 import com.example.androidapplication.R;
 import com.example.androidapplication.domain.model.Patient;
+import com.example.androidapplication.domain.model.presenters.PatientWithSessions;
 import com.example.androidapplication.presentation.contracts.EditAddContract;
-import com.example.androidapplication.presentation.contracts.ViewPatientDetailContract;
-import com.example.androidapplication.ui.fragments.PatientFormFragment;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -108,21 +105,22 @@ public class EditAddActivity extends AppCompatActivity implements EditAddContrac
     }
 
     @Override
-    public void showPatient(@NotNull Patient patient) {
-        this.patient = patient;
+    public void showPatient(@NotNull PatientWithSessions patient) {
+        this.patient = patient.patient;
+        Patient patientInfo = patient.patient;
 
-        idField.setText(String.valueOf(patient.getId()));
-        nameField.setText(String.valueOf(patient.getName()));
-        surnameField.setText(String.valueOf(patient.getSurname()));
-        patronumicField.setText(String.valueOf(patient.getPatronumic()));
-        birthDayField.setText(String.valueOf(patient.getBirthDay()));
-        cardNumberField.setText(String.valueOf(patient.getCardNumber()));
-        diagnosisField.setText(String.valueOf(patient.getDiagnosis()));
-        enterDateField.setText(format.format(patient.getEnterDate()));
-        isPaidCB.setChecked(patient.isPaid());
-
-        if(patient.getOutDate()!=null)
-            outDateField.setText(format.format(patient.getOutDate()));
+        idField.setText(String.valueOf(patientInfo.getId()));
+        nameField.setText(String.valueOf(patientInfo.getName()));
+        surnameField.setText(String.valueOf(patientInfo.getSurname()));
+        patronumicField.setText(String.valueOf(patientInfo.getPatronumic()));
+        birthDayField.setText(String.valueOf(patientInfo.getBirthDay()));
+        cardNumberField.setText(String.valueOf(patientInfo.getCardNumber()));
+//        diagnosisField.setText(String.valueOf(patientInfo.getDiagnosis()));
+//        enterDateField.setText(format.format(patientInfo.getEnterDate()));
+//        isPaidCB.setChecked(patient.isPaid());
+//
+//        if(patient.getOutDate()!=null)
+//            outDateField.setText(format.format(patient.getOutDate()));
     }
 
     @Override
